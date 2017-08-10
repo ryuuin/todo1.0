@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+<h2>Registration</h2>
+<form class="form-horizontal" method="post">
+<fieldset>
+<div class="form-group">
+  <label class="col-md-4 control-label">Name</label>
+  <div class="col-md-4">
+  <input id="username" placeholder="Insert your Name" class="form-control input-md" required="" type="text">
+  <span class="help-block"> </span>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label">Password</label>
+  <div class="col-md-4">
+  <input type="password" id="password1" placeholder="Insert your Password" class="form-control input-md" required="" type="text">
+  <span class="help-block"> </span>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label">Confirm Password</label>
+  <div class="col-md-4">
+  <input type="password" id="password2" placeholder="Confirm your Password" class="form-control input-md" required="" type="text">
+  <span class="help-block"> </span>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="col-md-4 control-label"> </label>
+  <div class="col-md-4">
+    <button id="singlebutton" class="btn btn-primary" onclick="resgiter()">Submit</button>
+  </div>
+</div>
+
+</fieldset>
+</form>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    function resgiter(){
+      var user = $("#username").val();
+      var password1 = $("#password1").val();
+      var password2 = $("#password2").val();
+      if(password1=='' || password2=='' || user==''){
+        alert('user and password is required!');
+      }else if(password1 !== password2) {
+        alert('twice password not equal!');
+      }else{
+        $.ajax({
+          url: "{{ url_for('check_resgiter') }}",
+          data: {'user': user, 'password': password1},
+          type: 'POST',
+          success: function(data){
+            if(data.msg == 'ok'){
+              window.location.href = "{{url_for('login')}}";
+            }
+            if(data.code == '1'){
+              alert(data.msg);
+            }
+          }
+        });
+      }
+    }
+</script>
+{% endblock %}

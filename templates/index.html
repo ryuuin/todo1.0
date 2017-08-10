@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if user %}
+<h3>welcome to flask1.0, {{ user }}</h3>
+<br>
+<p>this is a web site developed by flask and bootstrap.<p>
+{% else %}
+<h3>welcome to flask1.0, stonger<h3>
+<br>
+<p>you seem not login, if you have resgitered you can click login in or click resgiter.<p>
+{% endif %}
+{% endblock %}
