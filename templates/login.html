@@ -16,13 +16,15 @@
             <input type="checkbox" value="remember-me"> Remember me
           </label>
         </div>
-        <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit" onclick="login()">Sign in</button>
+        <button id="submit" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 </form>
 {% endblock %}
 
 {% block script %}
 <script>
-    function login(){
+  $(document).ready(function(){
+    $("#submit").click(function(event){
+      event.preventDefault();
       var user = $("#username").val();
       var password = $("#password").val();
       if(user == '' || password == ''){
@@ -42,6 +44,7 @@
           }
         });
       }
-    }
+    });
+  });
 </script>
 {% endblock %}

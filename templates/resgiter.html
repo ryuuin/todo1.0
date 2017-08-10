@@ -6,7 +6,7 @@
 {% block content %}
 <div class="row">
 <h2>Registration</h2>
-<form class="form-horizontal" method="post">
+<form class="form-horizontal" method="post" action="">
 <fieldset>
 <div class="form-group">
   <label class="col-md-4 control-label">Name</label>
@@ -35,7 +35,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label"> </label>
   <div class="col-md-4">
-    <button id="singlebutton" class="btn btn-primary" onclick="resgiter()">Submit</button>
+    <button id="singlebutton" class="btn btn-primary">Submit</button>
   </div>
 </div>
 
@@ -46,29 +46,36 @@
 
 {% block script %}
 <script>
-    function resgiter(){
-      var user = $("#username").val();
-      var password1 = $("#password1").val();
-      var password2 = $("#password2").val();
-      if(password1=='' || password2=='' || user==''){
-        alert('user and password is required!');
-      }else if(password1 !== password2) {
-        alert('twice password not equal!');
-      }else{
-        $.ajax({
-          url: "{{ url_for('check_resgiter') }}",
-          data: {'user': user, 'password': password1},
-          type: 'POST',
-          success: function(data){
-            if(data.msg == 'ok'){
-              window.location.href = "{{url_for('login')}}";
-            }
-            if(data.code == '1'){
-              alert(data.msg);
-            }
+$(document).ready(function(){
+  //$.ajaxSetup({async:false});
+  $("#singlebutton").click(function(event){
+    event.preventDefault();
+    var user = $("#username").val();
+    var password1 = $("#password1").val();
+    var password2 = $("#password2").val();
+    if(password1=='' || password2=='' || user==''){
+      alert('user and password is required!');
+    }else if(password1 !== password2) {
+      alert('twice password not equal!');
+    }else{
+      $.ajax({
+        url: "{{ url_for('check_resgiter') }}",
+        data: {'user': user, 'password': password1},
+        type: 'POST',
+        cache: false,
+        global: true,
+        ajax_func_flag: false,
+        success: function(data){
+          if(data.msg == 'ok'){
+            window.location.href = "{{url_for('login')}}";
           }
-        });
-      }
+          if(data.code == '1'){
+            alert(data.msg);
+          }
+        }
+      });
     }
+  });
+});
 </script>
 {% endblock %}
