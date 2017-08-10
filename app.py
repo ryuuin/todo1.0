@@ -47,12 +47,12 @@ def index():
 
 @app.route('/login', methods=['GET'])
 def login():
-    return render_template('login.html')
+    return render_template('login.html', user='')
 
 
 @app.route('/resgiter', methods=['GET'])
 def resgiter():
-    return render_template('resgiter.html')
+    return render_template('resgiter.html', user='')
 
 
 @app.route('/login_out', methods=['GET'])
@@ -112,7 +112,6 @@ def not_found(e):
 @app.errorhandler(405)
 def method_not_allow(e):
     return render_template('405.html'), 405
-
 
 
 if __name__ == '__main__':

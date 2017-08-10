@@ -36,7 +36,9 @@
             <li class="active"><a href="{{url_for('index')}}">Home</a></li>
             <li><a href="{{url_for('login')}}">login</a></li>
             <li><a href="{{url_for('resgiter')}}">resgiter</a></li>
+            {% if user %}
             <li><a href="{{url_for('login_out')}}">login out</a></li>
+            {% endif %}
           </ul>
         </div><!--/.nav-collapse -->
       </div>
