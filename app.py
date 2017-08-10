@@ -114,10 +114,6 @@ def method_not_allow(e):
     return render_template('405.html'), 405
 
 
-@app.errorhandler(500)
-def method_not_allow(e):
-    return render_template('500.html'), 500
-
 
 if __name__ == '__main__':
     manager.run()
