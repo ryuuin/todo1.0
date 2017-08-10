@@ -39,19 +39,6 @@ manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command("db", MigrateCommand)
 
 
-'''
-@app.before_first_request
-def create_db():
-    db.create_all()
-    init_users = [USER(name='chencheng', password='123'),
-                  USER(name='lxgui', password='123'),
-                  USER(name='haha', password='123')]
-
-    db.session.add_all(init_users)
-    db.session.commit()
-'''
-
-
 @app.route('/')
 def index():
     user = session.get('user', '')
@@ -79,7 +66,7 @@ def check_login():
     if request.method == 'POST':
         user = request.form['user']
         password = request.form['password']
-        data = {}
+        data = {'code': 1, 'msg': ''}
         user_obj = USER.query.filter_by(name=user).first()
         if user_obj:
             if password == user_obj.password:
@@ -87,10 +74,8 @@ def check_login():
                 data['msg'] = 'ok'
                 session['user'] = user
             else:
-                data['code'] = 1
                 data['msg'] = 'password error!'
         else:
-            data['code'] = 1
             data['msg'] = 'not found user!'
 
         return jsonify(data)
@@ -102,10 +87,9 @@ def check_resgiter():
     if request.method == 'POST':
         user = request.form['user']
         password = request.form['password']
-        data = {}
+        data = {'code': 1, 'msg': ''}
         if user and password:
             if USER.query.filter_by(name=user).first():
-                data['code'] = 1
                 data['msg'] = 'you already resgitered!'
             else:
                 new_user = USER(name=user, password=password)
@@ -114,7 +98,6 @@ def check_resgiter():
                 data['code'] = 0
                 data['msg'] = 'ok'
         else:
-            data['code'] = 1
             data['msg'] = 'user or password is empty!'
 
         return jsonify(data)
