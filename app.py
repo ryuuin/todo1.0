@@ -28,11 +28,21 @@ class USER(db.Model):
     password = db.Column(db.String(100))
 
     def __repr__(self):
-        return '<user:%s>' %self.name
+        return '<user:%s>' % self.name
+
+
+class TODO(db.Model):
+    __tablename__ = 'todo'
+    id = db.Column(db.Integer, primary_key=True)
+    todo = db.Column(db.String(100), unique=True)
+    description = db.Column(db.String(200))
+
+    def __repr__(self):
+        return '<todo:%s>' % self.todo
 
 
 def make_shell_context():
-    return dict(app=app, db=db, USER=USER)
+    return dict(app=app, db=db, USER=USER, TODO=TODO)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
@@ -53,6 +63,42 @@ def login():
 @app.route('/resgiter', methods=['GET'])
 def resgiter():
     return render_template('resgiter.html', user='')
+
+
+@app.route('/todo', methods=['GET'])
+def todo():
+    user = session.get('user', '')
+    return render_template('todo.html', user=user)
+
+
+@app.route('/add_todo', methods=['POST'])
+def add_todo():
+    if request.method == 'POST':
+        todo = request.form['todo']
+        describe = request.form.get('describe', '')
+        new_todo = TODO(todo=todo, description=describe)
+        db.session.add(new_todo)
+        db.session.commit()
+
+        return(jsonify({'msg': 'ok'}))
+    else:
+        return(jsonify({'msg': 'your method is not allowed!'}))
+
+
+@app.route('/done_todo', methods=['POST'])
+def done_todo():
+    if request.method == 'POST':
+        todo = request.form['todo']
+        if TODO.query.filter_by(todo=todo).first():
+            del_todo = TODO.query.filter_by(todo=todo).first()
+            db.session.delete(del_todo)
+            db.session.commit()
+
+            return jsonify({'msg': 'ok'})
+        else:
+            return jsonify({'msg': 'no such todo!'})
+
+    return jsonify({'msg': 'your method is not allowed!'})
 
 
 @app.route('/login_out', methods=['GET'])
