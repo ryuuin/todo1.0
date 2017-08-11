@@ -1,67 +1,80 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Todo RESTful API TEST</title>
-  </head>
-  <body>
-    <form enctype="application/json" method="post">
-      <label>title:</label>
-      <input type="text" name="title"><br>
-      <label>description:</label>
-      <input type="texteara" name="description"><br>
-      <button type="submit">add task</button>
-    </form>
+{% extends 'base.html' %}
 
-    <ol id="container"></ol>
+{% block content %}
+<h3>welcome to flask1.0, {{ user }}</h3>
+<p>this is flask1.0, you can create a new todo list to record your life or work!</p>
+<br>
+<br>
+<div class="row">
+  <div class="col-md-6">
+      <form class="form-horizontal" method="post" action="">
+      <fieldset>
+      <div class="form-group">
+        <label class="col-md-4 control-label">Todo</label>
+        <div class="col-md-4">
+        <input id="todo" placeholder="Insert your todo" class="form-control input-md" required="" type="text">
+        <span class="help-block"> </span>
+        </div>
+      </div>
 
-    <script>
-      var container = document.getElementById('container');
-      // add a task
-      var add_child = function(task) {
-        var li = document.createElement('li');
-        li.innerText = task["title"] + " " + task["description"];
-        container.appendChild(li);
-      };
-      // transfor formdata to json
-      var convert_formdata_to_json = function(formdata) {
-        var object_data = {};
-        for(var entry in formdata.entries()){
-          object_data[entry[0]] = entry[1];
-        }
-        return JSON.stringify(object_data);
-      };
-      window.onload = function(){
-        var xhr = new XMLHttpRequest();
+      <div class="form-group">
+        <label class="col-md-4 control-label">Description</label>
+        <div class="col-md-4">
+        <textarea id="describe" class="form-control input-md" rows="3"></textarea>
+        </div>
+      </div>
 
-        xhr.open('GET', 'todo/api/v1.0/tasks/');
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send();
+      <div class="form-group">
+        <label class="col-md-4 control-label"> </label>
+        <div class="col-md-4">
+          <button id="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </div>
+  </div>
+  <div class="col-md-6">
+    <table id="todo-table" class="table table-responsive no-padding">
+      <thead>
+        <tr>
+          <th>todo</th>
+          <th>time</th>
+          <th>description</th>
+          <th>finlish</th>
+        </tr>
+      <thead>
+    </table>
+  </div>
+</div>
+{% endblock %}
 
-        xhr.addEventLister('loadend', function(){
-          if(xhr.status == 200){
-            var res = JSON.parse(xhr.responseText);
-            res["task"].map(add_child);
+{% block script %}
+<script src={{url_for('static', filename='js/main.js')}}></script>
+<script>
+  done_todo = function(obj, todo) {
+    ajaxSend('/done_todo', {'todo': todo}, function(){
+      obj.parentNode.parentNode.remove();
+    },'POST')
+  }
+  $('document').ready(function(){
+    $("#submit").click(function(event){
+      event.preventDefault();
+      var todo = $("#todo").val();
+      var describe = $("#describe").val();
+      if(todo == ''){
+        alert('todo not allowed empty!');
+      }else{
+        ajaxSend('/add_todo', {'todo': todo, 'describe': describe}, function(data){
+          if(data.msg == 'ok'){
+            $("#todo-table").append("<tr>" +
+              "<td>" + todo + "<td>" +
+              "<td>" + Date().toString() + "<td>" +
+              "<td>" + describe + "</td>" +
+              "<td><button onclick='done_todo(this, \""+ todo + "\")'>done</button></td>");
+          }else{
+            alert(data.msg);
           }
-        }, false);
-      };
-    </script>
-    <script>
-      var formobj = document.querySelector('form');
-      formobj.addEventLister('submit', function(event){
-        event.preventDefault();
-        var xhr2 = new XMLHttpRequest();
-        xhr2.open('POST', '/todo/api/v1.0/tasks/');
-        xhr2.setRequestHeader('Content-Type', 'application/json');
-        xhr2.send(convert_formdata_to_json(new FormData(formobj)));
-
-        xhr2.addEventLister('loadend', function(){
-          if(xhr.status == 201){
-            var res2 = JSON.parse(xhr2.responseText);
-            res2["task"].map(add_child);
-          }
-        }, false);
-      }, false);
-    </script>
-  </body>
-</html>
+        },'POST');
+      }
+    });
+  });
+</script>
+{% endblock %}
