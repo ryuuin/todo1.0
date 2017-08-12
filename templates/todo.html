@@ -36,11 +36,21 @@
       <thead>
         <tr>
           <th>todo</th>
-          <th>time</th>
           <th>description</th>
+          <th>time</th>
           <th>finlish</th>
         </tr>
       <thead>
+      <tbody>
+        {%for todo in todo_list %}
+        <tr>
+        <td>{{todo.todo}}</td>
+        <td>{{todo.description}}</td>
+        <td>{{todo.time}}</td>
+        <td><button onclick='del_todo(this,{{ todo.id }}'>done</button></td>
+        </tr>
+        {% endfor %}
+      </tbody>
     </table>
   </div>
 </div>
@@ -51,6 +61,11 @@
 <script>
   done_todo = function(obj, todo) {
     ajaxSend('/done_todo', {'todo': todo}, function(){
+      obj.parentNode.parentNode.remove();
+    },'POST')
+  }
+  del_todo = function(obj, id) {
+    ajaxSend('/del_todo', {'id', id}, function(){
       obj.parentNode.parentNode.remove();
     },'POST')
   }
