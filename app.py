@@ -1,5 +1,6 @@
 # coding:utf-8
 import os
+from datetime import datetime
 from flask import Flask, render_template, session, request, jsonify, redirect, url_for
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
@@ -34,7 +35,9 @@ class USER(db.Model):
 class TODO(db.Model):
     __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(100))
     todo = db.Column(db.String(100), unique=True)
+    created = db.Column(db.DateTime, default=datetime.utcnow)
     description = db.Column(db.String(200))
 
     def __repr__(self):
@@ -68,15 +71,26 @@ def resgiter():
 @app.route('/todo', methods=['GET'])
 def todo():
     user = session.get('user', '')
-    return render_template('todo.html', user=user)
+    todos = TODO.query.filter_by(user=user)
+    todo_list = []
+    for each in todos:
+        todo = {}
+        todo['id'] = each.id
+        todo['todo'] = each.todo
+        todo['time'] = each.created
+        todo['description'] = each.description
+        todo_list.append(todo)
+
+    return render_template('todo.html', user=user, todo_list=todo_list)
 
 
 @app.route('/add_todo', methods=['POST'])
 def add_todo():
     if request.method == 'POST':
+        user = session['user']
         todo = request.form['todo']
         describe = request.form.get('describe', '')
-        new_todo = TODO(todo=todo, description=describe)
+        new_todo = TODO(todo=todo, user=user, description=describe)
         db.session.add(new_todo)
         db.session.commit()
 
