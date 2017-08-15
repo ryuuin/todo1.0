@@ -88,31 +88,27 @@ def todo():
 def add_todo():
     if request.method == 'POST':
         user = session['user']
-        todo = request.form['todo']
+        todo = request.form.get('todo', '')
         describe = request.form.get('describe', '')
-        new_todo = TODO(todo=todo, user=user, description=describe)
-        db.session.add(new_todo)
-        db.session.commit()
-
-        return(jsonify({'msg': 'ok'}))
-    else:
-        return(jsonify({'msg': 'your method is not allowed!'}))
-
-
-@app.route('/done_todo', methods=['POST'])
-def done_todo():
-    if request.method == 'POST':
-        todo = request.form['todo']
-        if TODO.query.filter_by(todo=todo).first():
-            del_todo = TODO.query.filter_by(todo=todo).first()
-            db.session.delete(del_todo)
+        if todo and describe:
+            new_todo = TODO(todo=todo, user=user, description=describe)
+            db.session.add(new_todo)
             db.session.commit()
-
-            return jsonify({'msg': 'ok'})
+            return redirect(url_for('todo'))
         else:
-            return jsonify({'msg': 'no such todo!'})
+            return redirect(url_for('add_todo'))
 
-    return jsonify({'msg': 'your method is not allowed!'})
+
+@app.route('/done_todo', methods=['GET'])
+def done_todo():
+    user = request.args.get('user')
+    todo_id = request.args.get('id')
+
+    done_todo = TODO.query.filter_by(id=todo_id, user=user).first()
+    db.session.delete(done_todo)
+    db.session.commit()
+
+    return redirect(url_for('todo'))
 
 
 @app.route('/login_out', methods=['GET'])
