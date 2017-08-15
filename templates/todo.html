@@ -7,12 +7,12 @@
 <br>
 <div class="row">
   <div class="col-md-6">
-      <form class="form-horizontal" method="post" action="">
+      <form class="form-horizontal" method="post" action="/add_todo">
       <fieldset>
       <div class="form-group">
         <label class="col-md-4 control-label">Todo</label>
         <div class="col-md-4">
-        <input id="todo" placeholder="Insert your todo" class="form-control input-md" required="" type="text">
+        <input id="todo" placeholder="Insert your todo" class="form-control input-md" required="" type="text" name="todo">
         <span class="help-block"> </span>
         </div>
       </div>
@@ -20,7 +20,7 @@
       <div class="form-group">
         <label class="col-md-4 control-label">Description</label>
         <div class="col-md-4">
-        <textarea id="describe" class="form-control input-md" rows="3"></textarea>
+        <textarea id="describe" class="form-control input-md" rows="3" name="describe"></textarea>
         </div>
       </div>
 
@@ -30,6 +30,7 @@
           <button id="submit" class="btn btn-primary">Submit</button>
         </div>
       </div>
+    </from>
   </div>
   <div class="col-md-6">
     <table id="todo-table" class="table table-responsive no-padding">
@@ -47,7 +48,7 @@
         <td>{{todo.todo}}</td>
         <td>{{todo.description}}</td>
         <td>{{todo.time}}</td>
-        <td><button onclick='del_todo(this,{{ todo.id }}'>done</button></td>
+        <td><button class="btn btn-primary" onclick="del_todo('{{user}}', {{ todo.id }})">done</button></td>
         </tr>
         {% endfor %}
       </tbody>
@@ -57,8 +58,11 @@
 {% endblock %}
 
 {% block script %}
-<script src={{url_for('static', filename='js/main.js')}}></script>
 <script>
+function del_todo(user, todoId){
+  window.location.href = '/done_todo?user=' + user + '&id=' + todoId;
+}
+/*
   done_todo = function(obj, todo) {
     ajaxSend('/done_todo', {'todo': todo}, function(){
       obj.parentNode.parentNode.remove();
@@ -91,5 +95,6 @@
       }
     });
   });
+  */
 </script>
 {% endblock %}
