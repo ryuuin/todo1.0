@@ -37,7 +37,7 @@ class TODO(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user = db.Column(db.String(100))
     todo = db.Column(db.String(100), unique=True)
-    created = db.Column(db.DateTime, default=datetime.utcnow)
+    created = db.Column(db.DateTime, default=datetime.now())
     description = db.Column(db.String(200))
 
     def __repr__(self):
