@@ -5,3 +5,4 @@ a simple web application created by flask & bootstrap
 - add todo list on 2017-08-11
 - add todo database user and time columns on 2017-08-12
 - fix addtodo bugs and make it run well on 2017-08-15
+- fix create time bugs on 2017-08-22
