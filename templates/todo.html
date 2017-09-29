@@ -47,7 +47,7 @@
         <tr>
         <td>{{todo.todo}}</td>
         <td>{{todo.description}}</td>
-        <td>{{todo.time}}</td>
+        <td>{{todo.created}}</td>
         <td><button class="btn btn-primary" onclick="del_todo('{{user}}', {{ todo.id }})">done</button></td>
         </tr>
         {% endfor %}

@@ -68,8 +68,7 @@ $(document).ready(function(){
         success: function(data){
           if(data.msg == 'ok'){
             window.location.href = "{{url_for('login')}}";
-          }
-          if(data.code == '1'){
+          }else{
             alert(data.msg);
           }
         }

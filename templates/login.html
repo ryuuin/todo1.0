@@ -37,8 +37,7 @@
           success: function(data){
             if(data.msg == 'ok'){
               window.location.href = '/';
-            }
-            if(data.code == '1'){
+            }else{
               alert(data.msg);
             }
           }
